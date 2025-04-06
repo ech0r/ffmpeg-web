@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg WebAssembly Transcoder</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include ffmpeg.wasm libraries -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="js/ffmpeg-bridge.js" type="module"></script>
+    <script type="module">
+        import init from './pkg/ffmpeg_transcoder.js';
+
+        async function run() {
+            // Load the WebAssembly module
+            const wasm = await init();
+            
+            // Call the run_app function
+            wasm.run_app();
+        }
+
+        // Run the application when the page loads
+        window.addEventListener('load', () => {
+            run().catch(console.error);
+        });
+    </script>
+</body>
+</html>

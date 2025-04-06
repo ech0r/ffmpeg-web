@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg WebAssembly Transcoder</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // FFmpeg WebAssembly module initialization
+        var Module = {
+            // Notify when the WASM module is initialized
+            onRuntimeInitialized: function() {
+                console.log('FFmpeg WebAssembly module initialized');
+                
+                // Check if we have a function to notify Rust of initialization
+                if (typeof window.ffmpegInitialized === 'function') {
+                    window.ffmpegInitialized();
+                }
+            },
+            
+            // Progress callback
+            onProgress: function(progress) {
+                console.log('Transcoding progress:', progress + '%');
+                
+                // Check if we have a function to notify Rust of progress
+                if (typeof window.updateProgressBar === 'function') {
+                    window.updateProgressBar(progress);
+                }
+            },
+            
+            // Print output to console for debugging
+            print: function(text) {
+                console.log('FFmpeg output:', text);
+            },
+            
+            // Print errors to console
+            printErr: function(text) {
+                console.error('FFmpeg error:', text);
+            }
+        };
+    </script>
+    <!-- FFmpeg WebAssembly module will be loaded here -->
+    <script src="ffmpeg_wrapper.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Rust/Yew app will render here -->
+        <div class="loading">
+            <h1>FFmpeg WebAssembly Transcoder</h1>
+            <p>Loading FFmpeg WebAssembly module...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import init from './pkg/ffmpeg_transcoder.js';
+        
+        async function start() {
+            // Load the Rust/Yew application
+            const wasm = await init();
+            
+            // Make FFmpeg module available globally
+            window.FFmpeg = function() {
+                return Module;
+            };
+            
+            // Start the application
+            if (typeof wasm.run_app === 'function') {
+                wasm.run_app();
+            } else {
+                console.error('Error: run_app function not found in WebAssembly module');
+            }
+        }
+        
+        // Start when the page is loaded
+        if (document.readyState === 'complete') {
+            start().catch(console.error);
+        } else {
+            window.addEventListener('load', () => {
+                start().catch(console.error);
+            });
+        }
+    </script>
+</body>
+</html>
