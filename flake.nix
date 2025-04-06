@@ -28,6 +28,7 @@
             ] ++ [
               # System dependencies
               pkg-config
+              binaryen
               openssl
               openssl.dev
               

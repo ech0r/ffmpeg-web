@@ -78,18 +78,19 @@ fn main() {
             println!("cargo:warning=FFmpeg already built. Skipping build.");
         }
         
-        // Install FFmpeg to the build directory
-        if !ffmpeg_dir.join("build").exists() {
-            println!("cargo:warning=Installing FFmpeg...");
-            let _ = Command::new("emmake")
-                .current_dir(&ffmpeg_dir)
-                .arg("make")
-                .arg("install")
-                .status()
-                .expect("Failed to install FFmpeg");
-        } else {
-            println!("cargo:warning=FFmpeg already installed. Skipping installation.");
-        }
+        // // Install FFmpeg to the build directory
+        // if !ffmpeg_dir.join("build").exists() {
+        //     let ffbuild = ffmpeg_dir.join("ffbuild");
+        //     println!("cargo:warning=Installing FFmpeg...");
+        //     let _ = Command::new("emmake")
+        //         .current_dir(&ffbuild)
+        //         .arg("make")
+        //         .arg("install")
+        //         .status()
+        //         .expect("Failed to install FFmpeg");
+        // } else {
+        //     println!("cargo:warning=FFmpeg already installed. Skipping installation.");
+        // }
         
         // Compile our C wrapper
         println!("cargo:warning=Compiling FFmpeg wrapper...");
